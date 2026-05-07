@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
-@RequestMapping("/room-change-requests")
+@RequestMapping("/api/room-change-requests")
 public class RoomChangeRequestController {
     private final RoomChangeRequestService service;
     public RoomChangeRequestController(RoomChangeRequestService service) {

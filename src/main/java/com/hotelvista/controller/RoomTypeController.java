@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping("/room-types")
+@RequestMapping("/api/room-types")
 public class RoomTypeController {
     private final RoomTypeService service;
     public RoomTypeController(RoomTypeService service) {
