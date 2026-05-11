@@ -93,5 +93,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>room-service</finalName>
     </build>
 </project>
