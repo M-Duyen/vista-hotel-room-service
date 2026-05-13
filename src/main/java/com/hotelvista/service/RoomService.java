@@ -1,6 +1,7 @@
 package com.hotelvista.service;
 import com.hotelvista.model.Room;
 import com.hotelvista.model.RoomType;
+import com.hotelvista.model.enums.RoomStatus;
 import com.hotelvista.repository.RoomRepository;
 import com.hotelvista.repository.RoomTypeRepository;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,11 @@ public class RoomService {
         roomRepo.deleteById(id);
     }
     public void save(Room room) {
+        roomRepo.save(room);
+    }
+    public void updateStatus(String id, RoomStatus status) {
+        Room room = roomRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Room not found"));
+        room.setStatus(status);
         roomRepo.save(room);
     }
 }
