@@ -81,6 +81,10 @@ public class DataSeeder implements CommandLineRunner {
                         2,
                         List.of("Wifi tốc độ cao", "TV thông minh", "Điều hòa", "Bàn làm việc"),
                         650000.0,
+                        null,
+                        null,
+                        null,
+                        null,
                         null
                 ),
                 new RoomType(
@@ -91,6 +95,10 @@ public class DataSeeder implements CommandLineRunner {
                         3,
                         List.of("Wifi tốc độ cao", "TV 50 inch", "Minibar", "Bồn tắm"),
                         950000.0,
+                        null,
+                        null,
+                        null,
+                        null,
                         null
                 ),
                 new RoomType(
@@ -101,6 +109,10 @@ public class DataSeeder implements CommandLineRunner {
                         4,
                         List.of("Wifi tốc độ cao", "Phòng khách riêng", "Minibar", "Ban công", "Bồn tắm"),
                         1600000.0,
+                        null,
+                        null,
+                        null,
+                        null,
                         null
                 )
         ));
