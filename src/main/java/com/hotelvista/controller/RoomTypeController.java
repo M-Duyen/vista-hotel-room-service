@@ -4,24 +4,31 @@ import com.hotelvista.service.RoomTypeService;
 import com.hotelvista.util.ValidatorsUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @RestController
 @RequestMapping("/api/room-types")
 public class RoomTypeController {
+
     private final RoomTypeService service;
+
     public RoomTypeController(RoomTypeService service) {
         this.service = service;
     }
+
     @GetMapping("")
     public List<RoomType> selectAll() {
         return service.selectAll();
     }
+
     @GetMapping("/{id}")
     public RoomType selectById(@PathVariable String id) {
         Optional<RoomType> roomType = service.selectById(id);
         return roomType.orElse(null);
     }
+
     @PostMapping("/save")
     public ResponseEntity<?> insertOrUpdate(@RequestBody RoomType roomType) {
         String idError = ValidatorsUtil.validateRoomTypeId(roomType.getRoomTypeID());
@@ -47,8 +54,18 @@ public class RoomTypeController {
         RoomType saved = service.insertOrUpdate(roomType);
         return ResponseEntity.ok(saved);
     }
+
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable String id) {
         service.delete(id);
+    }
+
+    @GetMapping("/discounted-price/{roomTypeId}")
+    public Double calculateDiscountedPrice(@PathVariable("roomTypeId") String roomTypeId, @RequestParam LocalDate bookingDate) {
+        Double price = service.calculateDiscountedPrice(roomTypeId, bookingDate);
+        if (price <= 0.0) {
+            return 0.0;
+        }
+        return price;
     }
 }
