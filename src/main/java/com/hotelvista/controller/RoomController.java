@@ -19,7 +19,20 @@ public class RoomController {
     }
 
     @GetMapping("")
-    public List<Room> selectAll() {
+    public List<Room> selectAll(@RequestParam(required = false) String roomTypeId) {
+        if (roomTypeId != null && !roomTypeId.trim().isEmpty()) {
+            return service.selectAll().stream()
+                    .filter(r -> r.getRoomType() != null && roomTypeId.equals(r.getRoomType().getRoomTypeID()))
+                    .toList();
+        }
+        return service.selectAll();
+    }
+
+    @GetMapping("/available")
+    public List<Room> checkAvailability(
+            @RequestParam(required = false) String checkIn,
+            @RequestParam(required = false) String checkOut,
+            @RequestParam(required = false, defaultValue = "1") int guests) {
         return service.selectAll();
     }
 
