@@ -132,12 +132,30 @@ public class DataSeeder implements CommandLineRunner {
         RoomType suite = roomTypeRepository.findById("RT-SUI").orElseThrow();
 
         roomRepository.saveAll(List.of(
-                new Room("101", 1, RoomStatus.AVAILABLE, LocalDateTime.now().minusDays(1), "Gần thang máy", standard, List.of("https://img.hotelvista.vn/rooms/101-1.jpg", "https://img.hotelvista.vn/rooms/101-2.jpg")),
-                new Room("102", 1, RoomStatus.CLEANING, LocalDateTime.now().minusHours(5), "Đang dọn phòng", standard, List.of("https://img.hotelvista.vn/rooms/102-1.jpg")),
-                new Room("201", 2, RoomStatus.BOOKED, LocalDateTime.now().minusDays(2), "View thành phố", deluxe, List.of("https://img.hotelvista.vn/rooms/201-1.jpg", "https://img.hotelvista.vn/rooms/201-2.jpg")),
-                new Room("202", 2, RoomStatus.AVAILABLE, LocalDateTime.now().minusHours(8), "Phòng góc yên tĩnh", deluxe, List.of("https://img.hotelvista.vn/rooms/202-1.jpg")),
-                new Room("301", 3, RoomStatus.MAINTENANCE, LocalDateTime.now().minusDays(3), "Kiểm tra điều hòa", suite, List.of("https://img.hotelvista.vn/rooms/301-1.jpg")),
-                new Room("302", 3, RoomStatus.AVAILABLE, LocalDateTime.now().minusHours(12), "Phòng suite gia đình", suite, List.of("https://img.hotelvista.vn/rooms/302-1.jpg", "https://img.hotelvista.vn/rooms/302-2.jpg"))
+                new Room("101", 1, RoomStatus.AVAILABLE, LocalDateTime.now().minusDays(1), "Gần thang máy", standard, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1765326155/pexels-photo-1457842_bxn0q2.jpg",
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1765326150/pexels-photo-164595_ldxdih.jpg"
+                )),
+                new Room("102", 1, RoomStatus.CLEANING, LocalDateTime.now().minusHours(5), "Đang dọn phòng", standard, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1765326134/pexels-photo-1838554_zgrpcj.jpg"
+                )),
+                new Room("201", 2, RoomStatus.BOOKED, LocalDateTime.now().minusDays(2), "View thành phố", deluxe, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1765326092/pexels-photo-262048_fpdy6s.jpg",
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1763549658/cosy-2648851_1280_hborix.jpg"
+                )),
+                new Room("202", 2, RoomStatus.AVAILABLE, LocalDateTime.now().minusHours(8), "Phòng góc yên tĩnh", deluxe, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1763549646/living-room-4809590_1280_avtvye.jpg"
+                )),
+                new Room("301", 3, RoomStatus.MAINTENANCE, LocalDateTime.now().minusDays(3), "Kiểm tra điều hòa", suite, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1763549643/curtain-1758853_1280_exc0tv.jpg",
+                        "https://res.cloudinary.com/dssdirbwj/image/upload/v1778302825/vistal-hotel/iynseaopqclfrtxhl2tr.jpg",
+                        "https://res.cloudinary.com/dssdirbwj/image/upload/v1778302824/vistal-hotel/cfgjyajn5hvpgrieojr8.jpg"
+                )),
+                new Room("302", 3, RoomStatus.AVAILABLE, LocalDateTime.now().minusHours(12), "Phòng suite gia đình", suite, List.of(
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1763549637/hotel-room-5858067_1280_auoi0o.jpg",
+                        "https://res.cloudinary.com/dk8gvar3y/image/upload/v1763548293/interior-8813803_1280_vrvnji.jpg",
+                        "https://res.cloudinary.com/dssdirbwj/image/upload/v1778296990/vistal-hotel/f6qvomay7u2c2ocejg2s.webp"
+                ))
         ));
     }
 
