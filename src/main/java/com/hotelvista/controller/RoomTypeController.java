@@ -3,6 +3,7 @@ import com.hotelvista.model.RoomType;
 import com.hotelvista.service.RoomTypeService;
 import com.hotelvista.util.ValidatorsUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,17 +20,20 @@ public class RoomTypeController {
     }
 
     @GetMapping("")
+    @PreAuthorize("permitAll()")
     public List<RoomType> selectAll() {
         return service.selectAll();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public RoomType selectById(@PathVariable String id) {
         Optional<RoomType> roomType = service.selectById(id);
         return roomType.orElse(null);
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('room_type_manage')")
     public ResponseEntity<?> insertOrUpdate(@RequestBody RoomType roomType) {
         String idError = ValidatorsUtil.validateRoomTypeId(roomType.getRoomTypeID());
         if (idError != null) {
@@ -56,11 +60,13 @@ public class RoomTypeController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('room_type_manage')")
     public void delete(@PathVariable String id) {
         service.delete(id);
     }
 
     @GetMapping("/discounted-price/{roomTypeId}")
+    @PreAuthorize("permitAll()")
     public Double calculateDiscountedPrice(@PathVariable("roomTypeId") String roomTypeId, @RequestParam LocalDate bookingDate) {
         Double price = service.calculateDiscountedPrice(roomTypeId, bookingDate);
         if (price <= 0.0) {

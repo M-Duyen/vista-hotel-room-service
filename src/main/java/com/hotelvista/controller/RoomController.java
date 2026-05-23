@@ -5,6 +5,7 @@ import com.hotelvista.model.enums.RoomStatus;
 import com.hotelvista.service.RoomService;
 import com.hotelvista.util.ValidatorsUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class RoomController {
     }
 
     @GetMapping("")
+    @PreAuthorize("permitAll()")
     public List<Room> selectAll(@RequestParam(required = false) String roomTypeId) {
         if (roomTypeId != null && !roomTypeId.trim().isEmpty()) {
             return service.selectAll().stream()
@@ -29,6 +31,7 @@ public class RoomController {
     }
 
     @GetMapping("/available")
+    @PreAuthorize("permitAll()")
     public List<Room> checkAvailability(
             @RequestParam(required = false) String checkIn,
             @RequestParam(required = false) String checkOut,
@@ -37,12 +40,14 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public Room selectById(@PathVariable String id) {
         Optional<Room> room = service.selectById(id);
         return room.orElse(null);
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('room_manage')")
     public ResponseEntity<?> insertOrUpdate(@RequestBody Room room) {
         String numberError = ValidatorsUtil.validateRoomNumber(room.getRoomNumber());
         if (numberError != null) {
@@ -60,11 +65,13 @@ public class RoomController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('room_manage')")
     public void delete(@PathVariable String id) {
         service.delete(id);
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAuthority('room_manage')")
     public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestParam RoomStatus status) {
         try {
             service.updateStatus(id, status);

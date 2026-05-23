@@ -4,31 +4,51 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
 
+import com.hotelvista.security.JwtAuthenticationFilter;
+
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // sử dụng CorsConfigurationSource bean
-                .csrf(csrf -> csrf.disable()) // nếu dùng JWT, thường disable CSRF
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
-                        .requestMatchers(HttpMethod.GET, "/api/rooms").permitAll() // public list endpoint
-                        .requestMatchers("/api/rooms", "/api/rooms/**").permitAll() // public endpoint
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/room-types", "/api/room-types/**").permitAll()
-                        .anyRequest().authenticated()
-                );
-        // thêm các filter JWT của bạn ở đây nếu cần
+            .cors(Customizer.withDefaults()) // sử dụng CorsConfigurationSource bean
+            .csrf(csrf -> csrf.disable()) // nếu dùng JWT, thường disable CSRF
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
+                .requestMatchers(HttpMethod.GET,
+                    "/api/rooms",
+                    "/api/rooms/**",
+                    "/api/room-types",
+                    "/api/room-types/**",
+                    "/api/promotions",
+                    "/api/promotions/**",
+                    "/api/room-type-promotions",
+                    "/api/room-type-promotions/**"
+                ).permitAll()
+                .anyRequest().authenticated()
+            );
+
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

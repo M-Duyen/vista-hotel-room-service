@@ -3,6 +3,7 @@ import com.hotelvista.model.RoomTypePromotion;
 import com.hotelvista.service.RoomTypePromotionService;
 import com.hotelvista.util.ValidatorsUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,27 +13,33 @@ public class RoomTypePromotionController {
         this.service = service;
     }
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<RoomTypePromotion> findAll() {
         return service.findAll();
     }
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public RoomTypePromotion findById(@PathVariable Long id) {
         return service.findById(id);
     }
     @GetMapping("/room-type/{roomTypeId}")
+    @PreAuthorize("permitAll()")
     public List<RoomTypePromotion> findByRoomTypeId(@PathVariable String roomTypeId) {
         return service.findByRoomTypeId(roomTypeId);
     }
     @GetMapping("/promotion/{promotionId}")
+    @PreAuthorize("permitAll()")
     public List<RoomTypePromotion> findByPromotionId(@PathVariable String promotionId) {
         return service.findByPromotionId(promotionId);
     }
     @GetMapping("/active/{roomTypeId}")
+    @PreAuthorize("permitAll()")
     public List<RoomTypePromotion> findActivePromotionsByRoomTypeID(@PathVariable String roomTypeId,
                                                                     @RequestParam LocalDate bookingDate) {
         return service.findActivePromotionsByRoomTypeID(roomTypeId, bookingDate);
     }
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('promotion_manage')")
     public ResponseEntity<?> save(@RequestBody RoomTypePromotion roomTypePromotion) {
         String roomTypeError = ValidatorsUtil.validateRequired(
                 roomTypePromotion.getRoomTypeId(),
@@ -55,6 +62,7 @@ public class RoomTypePromotionController {
         return ResponseEntity.ok(service.add(roomTypePromotion));
     }
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('promotion_manage')")
     public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
     }
