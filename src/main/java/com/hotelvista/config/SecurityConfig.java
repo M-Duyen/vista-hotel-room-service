@@ -35,6 +35,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
+                .requestMatchers("/internal/**").permitAll()
                 .requestMatchers(HttpMethod.GET,
                     "/api/rooms",
                     "/api/rooms/**",
