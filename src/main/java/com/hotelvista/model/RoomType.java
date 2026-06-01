@@ -48,14 +48,14 @@ public class RoomType {
     @Transient
     @JsonIgnore
     private List<RoomTypePromotionDTO> roomTypePromotions;
-
-    @ManyToMany
-    @JoinTable(
-            name = "room_type_seasonal_price",
-            joinColumns = @JoinColumn(name = "room_type_id"),
-            inverseJoinColumns = @JoinColumn(name = "seasonal_price_id")
-    )
-    private List<SeasonalPrice> seasonalPrices;
+//
+//    @ManyToMany
+//    @JoinTable(
+//            name = "room_type_seasonal_price",
+//            joinColumns = @JoinColumn(name = "room_type_id"),
+//            inverseJoinColumns = @JoinColumn(name = "seasonal_price_id")
+//    )
+//    private List<SeasonalPrice> seasonalPrices;
 
     private String hourlyRatePolicyID;
 

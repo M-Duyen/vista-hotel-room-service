@@ -1,13 +1,27 @@
 package com.hotelvista.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.io.Serializable;
+import java.time.LocalDate;
+
 @Data
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomTypePromotionDTO {
-    private String promotionID;
-    private String roomTypeID;
-    private String discountPromotionID;
-    
+    private RoomTypePromotionId id;
+    private PromotionDTO promotion;
+    private Double discountValue;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RoomTypePromotionId implements Serializable {
+        private String promotionId;
+        private String roomTypeId;
+    }
 }

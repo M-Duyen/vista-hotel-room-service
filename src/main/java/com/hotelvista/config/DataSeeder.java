@@ -3,7 +3,6 @@ package com.hotelvista.config;
 import com.hotelvista.model.Room;
 import com.hotelvista.model.RoomChangeRequest;
 import com.hotelvista.model.RoomType;
-import com.hotelvista.model.SeasonalPrice;
 import com.hotelvista.model.enums.RequestStatus;
 import com.hotelvista.model.enums.RoomStatus;
 import com.hotelvista.repository.*;
@@ -12,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,18 +19,15 @@ public class DataSeeder implements CommandLineRunner {
 
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
-    private final RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository;
     private final RoomChangeRequestRepository roomChangeRequestRepository;
     private final JdbcTemplate jdbcTemplate;
 
     public DataSeeder(RoomTypeRepository roomTypeRepository,
                       RoomRepository roomRepository,
-                      RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository,
                       RoomChangeRequestRepository roomChangeRequestRepository,
                       JdbcTemplate jdbcTemplate) {
         this.roomTypeRepository = roomTypeRepository;
         this.roomRepository = roomRepository;
-        this.roomTypeSeasonalPriceRepository = roomTypeSeasonalPriceRepository;
         this.roomChangeRequestRepository = roomChangeRequestRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -63,7 +58,6 @@ public class DataSeeder implements CommandLineRunner {
                         null,
                         null,
                         null,
-                        null,
                         null
                 ),
                 new RoomType(
@@ -77,7 +71,6 @@ public class DataSeeder implements CommandLineRunner {
                         null,
                         null,
                         null,
-                        null,
                         null
                 ),
                 new RoomType(
@@ -88,7 +81,6 @@ public class DataSeeder implements CommandLineRunner {
                         4,
                         List.of("Wifi tốc độ cao", "Phòng khách riêng", "Minibar", "Ban công", "Bồn tắm"),
                         1600000.0,
-                        null,
                         null,
                         null,
                         null,
@@ -166,10 +158,6 @@ public class DataSeeder implements CommandLineRunner {
                         null
                 )
         ));
-    }
-
-    private void linkSeasonalPrice(String roomTypeId, Integer seasonalPriceId) {
-        roomTypeSeasonalPriceRepository.insertSeasonalPriceRoomType(roomTypeId, seasonalPriceId);
     }
 
     private void ensureRoomTypeSeasonalPriceTable() {
