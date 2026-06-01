@@ -4,15 +4,12 @@ import com.hotelvista.model.Promotion;
 import com.hotelvista.model.Room;
 import com.hotelvista.model.RoomChangeRequest;
 import com.hotelvista.model.RoomType;
-import com.hotelvista.model.RoomTypePromotion;
 import com.hotelvista.model.SeasonalPrice;
 import com.hotelvista.model.enums.DiscountType;
 import com.hotelvista.model.enums.RequestStatus;
 import com.hotelvista.model.enums.RoomStatus;
-import com.hotelvista.repository.PromotionRepository;
 import com.hotelvista.repository.RoomChangeRequestRepository;
 import com.hotelvista.repository.RoomRepository;
-import com.hotelvista.repository.RoomTypePromotionRepository;
 import com.hotelvista.repository.RoomTypeRepository;
 import com.hotelvista.repository.RoomTypeSeasonalPriceRepository;
 import com.hotelvista.repository.SeasonalPriceRepository;
@@ -30,8 +27,6 @@ public class DataSeeder implements CommandLineRunner {
 
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
-    private final PromotionRepository promotionRepository;
-    private final RoomTypePromotionRepository roomTypePromotionRepository;
     private final SeasonalPriceRepository seasonalPriceRepository;
     private final RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository;
     private final RoomChangeRequestRepository roomChangeRequestRepository;
@@ -39,16 +34,12 @@ public class DataSeeder implements CommandLineRunner {
 
     public DataSeeder(RoomTypeRepository roomTypeRepository,
                       RoomRepository roomRepository,
-                      PromotionRepository promotionRepository,
-                      RoomTypePromotionRepository roomTypePromotionRepository,
                       SeasonalPriceRepository seasonalPriceRepository,
                       RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository,
                       RoomChangeRequestRepository roomChangeRequestRepository,
                       JdbcTemplate jdbcTemplate) {
         this.roomTypeRepository = roomTypeRepository;
         this.roomRepository = roomRepository;
-        this.promotionRepository = promotionRepository;
-        this.roomTypePromotionRepository = roomTypePromotionRepository;
         this.seasonalPriceRepository = seasonalPriceRepository;
         this.roomTypeSeasonalPriceRepository = roomTypeSeasonalPriceRepository;
         this.roomChangeRequestRepository = roomChangeRequestRepository;
@@ -64,9 +55,7 @@ public class DataSeeder implements CommandLineRunner {
 
         ensureRoomTypeSeasonalPriceTable();
         seedRoomTypes();
-        seedPromotions();
         seedRooms();
-        seedRoomTypePromotions();
         seedSeasonalPrices();
         seedRoomChangeRequests();
     }
@@ -118,13 +107,6 @@ public class DataSeeder implements CommandLineRunner {
         ));
     }
 
-    private void seedPromotions() {
-        promotionRepository.saveAll(List.of(
-                new Promotion("PROMO-TET", "Tết đoàn viên", "Giảm giá đặc biệt cho kỳ nghỉ Tết.", DiscountType.PERCENT, true),
-                new Promotion("PROMO-WEEKEND", "Weekend Escape", "Khuyến mãi cố định cho cuối tuần.", DiscountType.FIXED, true),
-                new Promotion("PROMO-SUMMER", "Summer Splash", "Ưu đãi mùa hè dành cho suite cao cấp.", DiscountType.PERCENT, true)
-        ));
-    }
 
     private void seedRooms() {
         RoomType standard = roomTypeRepository.findById("RT-STD").orElseThrow();
@@ -159,18 +141,7 @@ public class DataSeeder implements CommandLineRunner {
         ));
     }
 
-    private void seedRoomTypePromotions() {
-        if (roomTypePromotionRepository.findByRoomTypeId("RT-STD").isEmpty()) {
-            roomTypePromotionRepository.save(new RoomTypePromotion(null, "RT-STD", "PROMO-TET", 10.0, LocalDate.of(2026, 1, 15), LocalDate.of(2026, 2, 15)));
-        }
-        if (roomTypePromotionRepository.findByRoomTypeId("RT-DEL").isEmpty()) {
-            roomTypePromotionRepository.save(new RoomTypePromotion(null, "RT-DEL", "PROMO-WEEKEND", 12.5, LocalDate.of(2026, 5, 1), LocalDate.of(2026, 8, 31)));
-        }
-        if (roomTypePromotionRepository.findByRoomTypeId("RT-SUI").isEmpty()) {
-            roomTypePromotionRepository.save(new RoomTypePromotion(null, "RT-SUI", "PROMO-SUMMER", 18.0, LocalDate.of(2026, 6, 1), LocalDate.of(2026, 9, 30)));
-        }
-    }
-
+  
     private void seedSeasonalPrices() {
         SeasonalPrice spring = seasonalPriceRepository.save(new SeasonalPrice(0, "SPRING", 1.10, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 4, 30), "Mùa lễ hội đầu năm"));
         SeasonalPrice summer = seasonalPriceRepository.save(new SeasonalPrice(0, "SUMMER", 1.25, LocalDate.of(2026, 5, 1), LocalDate.of(2026, 8, 31), "Mùa cao điểm du lịch hè"));

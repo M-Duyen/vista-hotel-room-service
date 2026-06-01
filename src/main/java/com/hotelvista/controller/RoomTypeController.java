@@ -1,4 +1,5 @@
 package com.hotelvista.controller;
+
 import com.hotelvista.model.RoomType;
 import com.hotelvista.service.RoomTypeService;
 import com.hotelvista.util.ValidatorsUtil;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/room-types")
 public class RoomTypeController {
@@ -65,13 +67,34 @@ public class RoomTypeController {
         service.delete(id);
     }
 
-    @GetMapping("/discounted-price/{roomTypeId}")
+
+    @GetMapping("/search")
     @PreAuthorize("permitAll()")
-    public Double calculateDiscountedPrice(@PathVariable("roomTypeId") String roomTypeId, @RequestParam LocalDate bookingDate) {
-        Double price = service.calculateDiscountedPrice(roomTypeId, bookingDate);
-        if (price <= 0.0) {
-            return 0.0;
-        }
-        return price;
+    public List<RoomType> search(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String roomTypeId,
+            @RequestParam(required = false) Double minArea,
+            @RequestParam(required = false) Double maxArea,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Integer maxOccupancy) {
+        String query = q == null ? null : q.trim().toLowerCase();
+        return service.selectAll().stream()
+                .filter(rt -> roomTypeId == null
+                        || (rt.getRoomTypeID() != null && rt.getRoomTypeID().equals(roomTypeId)))
+                .filter(rt -> minArea == null || (rt.getArea() != null && rt.getArea() >= minArea))
+                .filter(rt -> maxArea == null || (rt.getArea() != null && rt.getArea() <= maxArea))
+                .filter(rt -> minPrice == null || (rt.getBasePrice() != null && rt.getBasePrice() >= minPrice))
+                .filter(rt -> maxPrice == null || (rt.getBasePrice() != null && rt.getBasePrice() <= maxPrice))
+                .filter(rt -> maxOccupancy == null
+                        || (rt.getMaxOccupancy() != null && rt.getMaxOccupancy().equals(maxOccupancy)))
+                .filter(rt -> {
+                    if (query == null || query.isEmpty())
+                        return true;
+                    boolean inName = rt.getTypeName() != null && rt.getTypeName().toLowerCase().contains(query);
+                    boolean inDesc = rt.getDescription() != null && rt.getDescription().toLowerCase().contains(query);
+                    return inName || inDesc;
+                })
+                .toList();
     }
 }

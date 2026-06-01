@@ -2,6 +2,8 @@ package com.hotelvista.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hotelvista.dto.RoomTypePromotionDTO;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,10 +45,9 @@ public class RoomType {
     private List<Room> rooms;
 
     @ToString.Exclude
-    @OneToMany
-    @JoinColumn(name = "room_type_id", referencedColumnName = "room_type_id", insertable = false, updatable = false)
+    @Transient
     @JsonIgnore
-    private List<RoomTypePromotion> roomTypePromotions;
+    private List<RoomTypePromotionDTO> roomTypePromotions;
 
     @ManyToMany
     @JoinTable(

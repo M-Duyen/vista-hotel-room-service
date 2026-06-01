@@ -39,6 +39,34 @@ public class RoomController {
         return service.selectAll();
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("permitAll()")
+    public List<Room> search(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String roomNumber,
+            @RequestParam(required = false) Integer floor,
+            @RequestParam(required = false) RoomStatus status,
+            @RequestParam(required = false) String roomTypeId) {
+        String query = q == null ? null : q.trim().toLowerCase();
+        return service.selectAll().stream()
+                .filter(r -> roomNumber == null || roomNumber.trim().isEmpty()
+                        || (r.getRoomNumber() != null && r.getRoomNumber().equals(roomNumber)))
+                .filter(r -> floor == null || (r.getFloor() != null && floor.equals(r.getFloor())))
+                .filter(r -> status == null || status.equals(r.getStatus()))
+                .filter(r -> roomTypeId == null
+                        || (r.getRoomType() != null && roomTypeId.equals(r.getRoomType().getRoomTypeID())))
+                .filter(r -> {
+                    if (query == null || query.isEmpty())
+                        return true;
+                    boolean inNumber = r.getRoomNumber() != null && r.getRoomNumber().toLowerCase().contains(query);
+                    boolean inNotes = r.getNotes() != null && r.getNotes().toLowerCase().contains(query);
+                    boolean inType = r.getRoomType() != null && r.getRoomType().getTypeName() != null
+                            && r.getRoomType().getTypeName().toLowerCase().contains(query);
+                    return inNumber || inNotes || inType;
+                })
+                .toList();
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public Room selectById(@PathVariable String id) {
