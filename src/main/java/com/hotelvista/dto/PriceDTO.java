@@ -1,4 +1,5 @@
 package com.hotelvista.dto;
+
 import com.hotelvista.model.SeasonalPrice;
 import lombok.AllArgsConstructor;
 import lombok.Data;

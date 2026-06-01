@@ -67,6 +67,16 @@ public class RoomTypeController {
         service.delete(id);
     }
 
+    @GetMapping("/discounted-price/{roomTypeId}")
+    @PreAuthorize("permitAll()")
+    public Double calculateDiscountedPrice(@PathVariable("roomTypeId") String roomTypeId,
+            @RequestParam LocalDate bookingDate) {
+        Double price = service.calculateDiscountedPrice(roomTypeId, bookingDate);
+        if (price <= 0.0) {
+            return 0.0;
+        }
+        return price;
+    }
 
     @GetMapping("/search")
     @PreAuthorize("permitAll()")

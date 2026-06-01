@@ -1,20 +1,14 @@
 package com.hotelvista.config;
 
-import com.hotelvista.model.Promotion;
 import com.hotelvista.model.Room;
 import com.hotelvista.model.RoomChangeRequest;
 import com.hotelvista.model.RoomType;
 import com.hotelvista.model.SeasonalPrice;
-import com.hotelvista.model.enums.DiscountType;
 import com.hotelvista.model.enums.RequestStatus;
 import com.hotelvista.model.enums.RoomStatus;
-import com.hotelvista.repository.RoomChangeRequestRepository;
-import com.hotelvista.repository.RoomRepository;
-import com.hotelvista.repository.RoomTypeRepository;
-import com.hotelvista.repository.RoomTypeSeasonalPriceRepository;
-import com.hotelvista.repository.SeasonalPriceRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.hotelvista.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,20 +21,17 @@ public class DataSeeder implements CommandLineRunner {
 
     private final RoomTypeRepository roomTypeRepository;
     private final RoomRepository roomRepository;
-    private final SeasonalPriceRepository seasonalPriceRepository;
     private final RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository;
     private final RoomChangeRequestRepository roomChangeRequestRepository;
     private final JdbcTemplate jdbcTemplate;
 
     public DataSeeder(RoomTypeRepository roomTypeRepository,
                       RoomRepository roomRepository,
-                      SeasonalPriceRepository seasonalPriceRepository,
                       RoomTypeSeasonalPriceRepository roomTypeSeasonalPriceRepository,
                       RoomChangeRequestRepository roomChangeRequestRepository,
                       JdbcTemplate jdbcTemplate) {
         this.roomTypeRepository = roomTypeRepository;
         this.roomRepository = roomRepository;
-        this.seasonalPriceRepository = seasonalPriceRepository;
         this.roomTypeSeasonalPriceRepository = roomTypeSeasonalPriceRepository;
         this.roomChangeRequestRepository = roomChangeRequestRepository;
         this.jdbcTemplate = jdbcTemplate;
@@ -56,7 +47,6 @@ public class DataSeeder implements CommandLineRunner {
         ensureRoomTypeSeasonalPriceTable();
         seedRoomTypes();
         seedRooms();
-        seedSeasonalPrices();
         seedRoomChangeRequests();
     }
 
@@ -141,17 +131,7 @@ public class DataSeeder implements CommandLineRunner {
         ));
     }
 
-  
-    private void seedSeasonalPrices() {
-        SeasonalPrice spring = seasonalPriceRepository.save(new SeasonalPrice(0, "SPRING", 1.10, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 4, 30), "Mùa lễ hội đầu năm"));
-        SeasonalPrice summer = seasonalPriceRepository.save(new SeasonalPrice(0, "SUMMER", 1.25, LocalDate.of(2026, 5, 1), LocalDate.of(2026, 8, 31), "Mùa cao điểm du lịch hè"));
-        SeasonalPrice holiday = seasonalPriceRepository.save(new SeasonalPrice(0, "HOLIDAY", 1.35, LocalDate.of(2026, 12, 20), LocalDate.of(2027, 1, 5), "Mùa lễ cuối năm"));
 
-        linkSeasonalPrice("RT-STD", spring.getId());
-        linkSeasonalPrice("RT-DEL", summer.getId());
-        linkSeasonalPrice("RT-SUI", summer.getId());
-        linkSeasonalPrice("RT-SUI", holiday.getId());
-    }
 
     private void seedRoomChangeRequests() {
         if (roomChangeRequestRepository.count() > 0L) {
