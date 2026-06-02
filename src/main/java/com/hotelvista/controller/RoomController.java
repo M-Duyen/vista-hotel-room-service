@@ -7,7 +7,9 @@ import com.hotelvista.util.ValidatorsUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,6 +39,13 @@ public class RoomController {
             @RequestParam(required = false) String checkOut,
             @RequestParam(required = false, defaultValue = "1") int guests) {
         return service.selectAll();
+    }
+
+    @GetMapping("/room-price")
+    @PreAuthorize("permitAll()")
+    public Map<String, Double> calculateRoomPrice(@RequestParam List<String> roomIds,
+                                                  @RequestParam LocalDate date) {
+        return service.calculateRoomPrice(roomIds, date);
     }
 
     @GetMapping("/search")
