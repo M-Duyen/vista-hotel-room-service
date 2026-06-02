@@ -83,6 +83,25 @@ public class RoomService {
         return prices;
     }
 
+    public Map<String, Double> calculateRoomStayPrice(List<String> roomIds, LocalDate checkInDate, LocalDate checkOutDate) {
+        if (checkInDate == null || checkOutDate == null || !checkOutDate.isAfter(checkInDate)) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
+
+        Map<String, Double> prices = new HashMap<>();
+        for (String roomId : roomIds) {
+            Room room = roomRepo.findById(roomId)
+                    .orElseThrow(() -> new IllegalArgumentException("Room not found: " + roomId));
+
+            double stayPrice = 0.0;
+            for (LocalDate date = checkInDate; date.isBefore(checkOutDate); date = date.plusDays(1)) {
+                stayPrice += calculatePriceByRoomType(room.getRoomType(), date);
+            }
+            prices.put(roomId, Math.max(0.0, stayPrice));
+        }
+        return prices;
+    }
+
     public double calculatePriceByRoomType(RoomType roomType, LocalDate date) {
         if (roomType == null) {
             return 0.0;

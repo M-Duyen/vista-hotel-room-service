@@ -48,6 +48,14 @@ public class RoomController {
         return service.calculateRoomPrice(roomIds, date);
     }
 
+    @GetMapping("/stay-price")
+    @PreAuthorize("permitAll()")
+    public Map<String, Double> calculateRoomStayPrice(@RequestParam List<String> roomIds,
+                                                      @RequestParam LocalDate checkInDate,
+                                                      @RequestParam LocalDate checkOutDate) {
+        return service.calculateRoomStayPrice(roomIds, checkInDate, checkOutDate);
+    }
+
     @GetMapping("/search")
     @PreAuthorize("permitAll()")
     public List<Room> search(
