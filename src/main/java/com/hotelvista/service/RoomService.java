@@ -73,12 +73,16 @@ public class RoomService {
         roomRepo.save(room);
     }
 
-    public Map<String, Double> calculateRoomPrice(List<String> roomIds, LocalDate date) {
+//    public Map<String, Double> calculateRoomPrice(List<String> roomIds, LocalDate date) {
+//        return calculateRoomPrice(roomIds, date, true);
+//    }
+
+    public Map<String, Double> calculateRoomPrice(List<String> roomIds, LocalDate date, boolean includeWeekendSurcharge) {
         Map<String, Double> prices = new HashMap<>();
         for (String roomId : roomIds) {
             Room room = roomRepo.findById(roomId)
                     .orElseThrow(() -> new IllegalArgumentException("Room not found: " + roomId));
-            prices.put(roomId, calculatePriceByRoomType(room.getRoomType(), date));
+            prices.put(roomId, calculatePriceByRoomType(room.getRoomType(), date, includeWeekendSurcharge));
         }
         return prices;
     }
@@ -95,14 +99,14 @@ public class RoomService {
 
             double stayPrice = 0.0;
             for (LocalDate date = checkInDate; date.isBefore(checkOutDate); date = date.plusDays(1)) {
-                stayPrice += calculatePriceByRoomType(room.getRoomType(), date);
+                stayPrice += calculatePriceByRoomType(room.getRoomType(), date, true);
             }
             prices.put(roomId, Math.max(0.0, stayPrice));
         }
         return prices;
     }
 
-    public double calculatePriceByRoomType(RoomType roomType, LocalDate date) {
+    public double calculatePriceByRoomType(RoomType roomType, LocalDate date, boolean includeWeekendSurcharge) {
         if (roomType == null) {
             return 0.0;
         }
@@ -118,16 +122,17 @@ public class RoomService {
         double seasonalIncrease = seasonalPrices.stream()
                 .mapToDouble(season -> basePrice * (getMultiplier(season) - 1.0))
                 .sum();
-        double weekendIncrease = calculateWeekendSurcharge(basePrice, date);
+        double weekendIncrease = includeWeekendSurcharge ? calculateWeekendSurcharge(basePrice, date) : 0.0;
         double promotionDiscount = promotions.stream()
                 .mapToDouble(promotion -> calculatePromotionDiscount(promotion, basePrice))
                 .sum();
 
         double finalPrice = basePrice + seasonalIncrease + weekendIncrease - promotionDiscount;
-        System.out.println("roomTypeId: " + roomTypeId
+        System.out.println("Stay date: " + date + ", roomTypeId: " + roomTypeId
                 + ", basePrice: " + basePrice
                 + ", seasonalIncrease: " + seasonalIncrease
                 + ", weekendIncrease: " + weekendIncrease
+                + ", includeWeekendSurcharge: " + includeWeekendSurcharge
                 + ", promotionDiscount: " + promotionDiscount
                 + ", finalPrice: " + finalPrice);
         return Math.max(0.0, finalPrice);

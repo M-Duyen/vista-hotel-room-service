@@ -36,6 +36,6 @@ public class RoomTypeService {
 
     public Double calculateDiscountedPrice(String roomTypeId, LocalDate bookingDate) {
         RoomType roomType = roomTypeRepo.findById(roomTypeId).orElse(null);
-        return roomService.calculatePriceByRoomType(roomType, bookingDate);
+        return roomService.calculatePriceByRoomType(roomType, bookingDate, true);
     }
 }

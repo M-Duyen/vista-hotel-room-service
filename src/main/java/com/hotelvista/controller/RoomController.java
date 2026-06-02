@@ -44,8 +44,9 @@ public class RoomController {
     @GetMapping("/room-price")
     @PreAuthorize("permitAll()")
     public Map<String, Double> calculateRoomPrice(@RequestParam List<String> roomIds,
-                                                  @RequestParam LocalDate date) {
-        return service.calculateRoomPrice(roomIds, date);
+                                                  @RequestParam LocalDate date,
+                                                  @RequestParam(defaultValue = "true") boolean includeWeekendSurcharge) {
+        return service.calculateRoomPrice(roomIds, date, includeWeekendSurcharge);
     }
 
     @GetMapping("/stay-price")
